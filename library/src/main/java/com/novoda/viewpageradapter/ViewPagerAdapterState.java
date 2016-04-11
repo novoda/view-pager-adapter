@@ -5,9 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.SparseArray;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ViewPagerAdapterState implements Parcelable {
 
     public static final Creator<ViewPagerAdapterState> CREATOR = new Creator<ViewPagerAdapterState>() {
@@ -19,26 +16,30 @@ public class ViewPagerAdapterState implements Parcelable {
         public ViewPagerAdapterState[] newArray(int size) {
             return new ViewPagerAdapterState[size];
         }
-
     };
 
-    private final Map<Integer, SparseArray<Parcelable>> viewStates;
+    private final SparseArray<SparseArray<Parcelable>> viewStates;
 
     public static ViewPagerAdapterState newInstance() {
-        return new ViewPagerAdapterState(new HashMap<Integer, SparseArray<Parcelable>>());
+        return new ViewPagerAdapterState(new SparseArray<SparseArray<Parcelable>>());
     }
 
     private static ViewPagerAdapterState from(Parcel in) {
         Bundle bundle = in.readBundle();
-        Map<Integer, SparseArray<Parcelable>> viewStates = new HashMap<>(bundle.keySet().size());
+        SparseArray<SparseArray<Parcelable>> viewStates = extractViewStatesFrom(bundle);
+        return new ViewPagerAdapterState(viewStates);
+    }
+
+    private static SparseArray<SparseArray<Parcelable>> extractViewStatesFrom(Bundle bundle) {
+        SparseArray<SparseArray<Parcelable>> viewStates = new SparseArray<>(bundle.keySet().size());
         for (String key : bundle.keySet()) {
             SparseArray<Parcelable> sparseParcelableArray = bundle.getSparseParcelableArray(key);
             viewStates.put(Integer.parseInt(key), sparseParcelableArray);
         }
-        return new ViewPagerAdapterState(viewStates);
+        return viewStates;
     }
 
-    private ViewPagerAdapterState(Map<Integer, SparseArray<Parcelable>> viewStates) {
+    private ViewPagerAdapterState(SparseArray<SparseArray<Parcelable>> viewStates) {
         this.viewStates = viewStates;
     }
 
@@ -53,8 +54,9 @@ public class ViewPagerAdapterState implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         Bundle bundle = new Bundle();
-        for (Map.Entry<Integer, SparseArray<Parcelable>> entry : viewStates.entrySet()) {
-            bundle.putSparseParcelableArray(String.valueOf(entry.getKey()), entry.getValue());
+        for (int i = 0; i < viewStates.size(); i++) {
+            SparseArray<Parcelable> viewState = viewStates.get(i);
+            bundle.putSparseParcelableArray(String.valueOf(i), viewState);
         }
         dest.writeBundle(bundle);
     }
@@ -63,5 +65,4 @@ public class ViewPagerAdapterState implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
 }

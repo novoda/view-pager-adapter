@@ -5,9 +5,9 @@ import android.view.View;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ViewIdGenerator {
+class ViewIdGenerator {
 
-    public int generateViewId() {
+    int generateViewId() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return View.generateViewId();
         } else {
@@ -30,7 +30,7 @@ public class ViewIdGenerator {
          *
          * @return a generated ID value
          */
-        public static int generateViewId() {
+        static int generateViewId() {
             while (true) {
                 final int result = NEXT_GENERATED_ID.get();
                 // aapt-generated IDs have the high byte nonzero; clamp to the range under that.

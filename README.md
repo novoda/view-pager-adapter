@@ -63,5 +63,5 @@ class TextViewPagerAdapter extends ViewPagerAdapter<TextView> {
 
 Here are a list of useful links:
 
- * We always welcome people to contribute new features or bug fixes, [here is how](https://github.com/novoda/novoda/blob/master/CONTRIBUTING.md)
+ * We always welcome people to contribute new features or bug fixes, please see our [contributing guide](https://github.com/novoda/novoda/blob/master/CONTRIBUTING.md) before opening a pull request
  * If you have a problem check the [Issues Page](https://github.com/novoda/view-pager-adapter/issues) first to see if we are working on it

@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.novoda:view-pager-adapter:0.9.0'
+    compile 'com.novoda:view-pager-adapter:<latest-version>'
 }
 ```
 

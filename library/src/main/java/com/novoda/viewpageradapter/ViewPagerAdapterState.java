@@ -25,7 +25,7 @@ public class ViewPagerAdapterState implements Parcelable {
     }
 
     private static ViewPagerAdapterState from(Parcel in) {
-        Bundle bundle = in.readBundle();
+        Bundle bundle = in.readBundle(ViewPagerAdapterState.class.getClassLoader());
         SparseArray<SparseArray<Parcelable>> viewStates = extractViewStatesFrom(bundle);
         return new ViewPagerAdapterState(viewStates);
     }

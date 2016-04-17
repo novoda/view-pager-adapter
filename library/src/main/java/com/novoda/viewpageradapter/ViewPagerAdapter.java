@@ -32,7 +32,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
     /**
      * Inflate the view representing an item at the given position.
-     * <p/>
+     * <p>
      * Do not add the view to the container, this is handled.
      *
      * @param container the parent view from which sizing information can be grabbed during inflation

@@ -62,7 +62,8 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param view     the view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected abstract void bindView(V view, int position);
+    protected void bindView(V view, int position) {
+    }
 
     @Override
     public void notifyDataSetChanged() {

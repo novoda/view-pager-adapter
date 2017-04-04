@@ -1,6 +1,7 @@
 package com.novoda.viewpageradapter;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.View;
@@ -19,11 +20,11 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     @Override
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
-        bindView(view, position);
+        SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
+        bindView(view, position, viewState);
 
         view.setId(viewIdGenerator.generateViewId());
         instantiatedViews.put(view, position);
-        restoreViewState(position, view);
         container.addView(view);
 
         // key with which to associate this view
@@ -42,19 +43,26 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     protected abstract V createView(ViewGroup container, int position);
 
     /**
+     * Bind the view to the item at the given position with view state.
+     *
+     * @param view      the view to bind
+     * @param position  the position of the data set that is to be represented by this view
+     * @param viewState the state of the view
+     */
+    protected void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
+        bindView(view, position);
+        if (viewState != null) {
+            view.restoreHierarchyState(viewState);
+        }
+    }
+
+    /**
      * Bind the view to the item at the given position.
      *
      * @param view     the view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected abstract void bindView(V view, int position);
-
-    private void restoreViewState(int position, V view) {
-        SparseArray<Parcelable> parcelableSparseArray = viewPagerAdapterState.get(position);
-        if (parcelableSparseArray == null) {
-            return;
-        }
-        view.restoreHierarchyState(parcelableSparseArray);
+    protected void bindView(V view, int position) {
     }
 
     @Override

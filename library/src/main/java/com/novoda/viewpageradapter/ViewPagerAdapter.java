@@ -69,7 +69,9 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
         for (Map.Entry<V, Integer> entry : instantiatedViews.entrySet()) {
-            bindView(entry.getKey(), entry.getValue());
+            int position = entry.getValue();
+            SparseArray<Parcelable> viewState = this.viewPagerAdapterState.get(position);
+            bindView(entry.getKey(), position, viewState);
         }
     }
 

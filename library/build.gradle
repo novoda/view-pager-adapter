@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'bintray-release'
 
 dependencies {
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-core-ui:25.3.1'
 }
 
 android {

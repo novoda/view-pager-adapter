@@ -20,7 +20,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     @Override
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
-        SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
+        SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
 
         int restoredId = viewPagerAdapterState.getId(position);
         view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
@@ -72,7 +72,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         super.notifyDataSetChanged();
         for (Map.Entry<V, Integer> entry : instantiatedViews.entrySet()) {
             int position = entry.getValue();
-            SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
+            SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
             bindView(entry.getKey(), position, viewState);
         }
     }

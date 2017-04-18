@@ -66,7 +66,7 @@ public class ViewPagerAdapterState implements Parcelable {
         viewStates.put(position, viewState);
     }
 
-    public SparseArray<Parcelable> get(int position) {
+    public SparseArray<Parcelable> getViewState(int position) {
         return viewStates.get(position);
     }
 

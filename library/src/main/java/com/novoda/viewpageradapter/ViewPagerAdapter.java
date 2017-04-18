@@ -23,7 +23,9 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
         bindView(view, position, viewState);
 
-        view.setId(viewIdGenerator.generateViewId());
+        int restoredId = viewPagerAdapterState.getId(position);
+        view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
+
         instantiatedViews.put(view, position);
         container.addView(view);
 
@@ -75,7 +77,8 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         }
     }
 
-    @SuppressWarnings("unchecked") // `key` is the object we return in `instantiateItem(ViewGroup container, int position)`
+    @SuppressWarnings("unchecked")
+    // `key` is the object we return in `instantiateItem(ViewGroup container, int position)`
     @Override
     public void destroyItem(ViewGroup container, int position, Object key) {
         V view = (V) key;
@@ -86,7 +89,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     private void saveViewState(int position, V view) {
         SparseArray<Parcelable> viewState = new SparseArray<>();
         view.saveHierarchyState(viewState);
-        viewPagerAdapterState.put(position, viewState);
+        viewPagerAdapterState.put(view.getId(), position, viewState);
     }
 
     @Override

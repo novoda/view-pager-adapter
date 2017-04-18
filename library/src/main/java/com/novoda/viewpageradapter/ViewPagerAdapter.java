@@ -21,11 +21,11 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
         SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
-        bindView(view, position, viewState);
 
         int restoredId = viewPagerAdapterState.getId(position);
         view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
 
+        bindView(view, position, viewState);
         instantiatedViews.put(view, position);
         container.addView(view);
 

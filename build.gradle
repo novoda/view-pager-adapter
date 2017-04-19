@@ -4,6 +4,7 @@ task wrapper(type: Wrapper) {
 
 allprojects {
     version = '0.9.3'
+    repositories { jcenter() }
 }
 
 buildscript {

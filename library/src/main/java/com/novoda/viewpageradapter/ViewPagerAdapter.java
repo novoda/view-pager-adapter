@@ -20,10 +20,12 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     @Override
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
-        SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
-        bindView(view, position, viewState);
+        SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
 
-        view.setId(viewIdGenerator.generateViewId());
+        int restoredId = viewPagerAdapterState.getId(position);
+        view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
+
+        bindView(view, position, viewState);
         instantiatedViews.put(view, position);
         container.addView(view);
 
@@ -70,12 +72,13 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         super.notifyDataSetChanged();
         for (Map.Entry<V, Integer> entry : instantiatedViews.entrySet()) {
             int position = entry.getValue();
-            SparseArray<Parcelable> viewState = viewPagerAdapterState.get(position);
+            SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
             bindView(entry.getKey(), position, viewState);
         }
     }
 
-    @SuppressWarnings("unchecked") // `key` is the object we return in `instantiateItem(ViewGroup container, int position)`
+    @SuppressWarnings("unchecked")
+    // `key` is the object we return in `instantiateItem(ViewGroup container, int position)`
     @Override
     public void destroyItem(ViewGroup container, int position, Object key) {
         V view = (V) key;
@@ -86,7 +89,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     private void saveViewState(int position, V view) {
         SparseArray<Parcelable> viewState = new SparseArray<>();
         view.saveHierarchyState(viewState);
-        viewPagerAdapterState.put(position, viewState);
+        viewPagerAdapterState.put(view.getId(), position, viewState);
     }
 
     @Override

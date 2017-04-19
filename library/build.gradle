@@ -4,6 +4,7 @@ apply plugin: 'bintray-release'
 dependencies {
     compile 'com.android.support:support-core-ui:25.3.1'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.7.22'
 }
 
 android {

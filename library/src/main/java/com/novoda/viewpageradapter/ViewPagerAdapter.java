@@ -12,10 +12,20 @@ import java.util.WeakHashMap;
 
 public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
-    private final Map<V, Integer> instantiatedViews = new WeakHashMap<>();
-    private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
+    private final Map<V, Integer> instantiatedViews;
+    private final ViewIdGenerator viewIdGenerator;
 
-    private ViewPagerAdapterState viewPagerAdapterState = ViewPagerAdapterState.newInstance();
+    private ViewPagerAdapterState viewPagerAdapterState;
+
+    protected ViewPagerAdapter() {
+        this(new WeakHashMap<V, Integer>(), new ViewIdGenerator(), ViewPagerAdapterState.newInstance());
+    }
+
+    ViewPagerAdapter(Map<V, Integer> instantiatedViews, ViewIdGenerator viewIdGenerator, ViewPagerAdapterState viewPagerAdapterState) {
+        this.instantiatedViews = instantiatedViews;
+        this.viewIdGenerator = viewIdGenerator;
+        this.viewPagerAdapterState = viewPagerAdapterState;
+    }
 
     @Override
     public V instantiateItem(ViewGroup container, int position) {

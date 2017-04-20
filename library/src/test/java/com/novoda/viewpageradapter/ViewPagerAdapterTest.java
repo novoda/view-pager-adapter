@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
@@ -67,7 +68,7 @@ public class ViewPagerAdapterTest {
         inOrder.verify(instansiatedViews).put(createdView, A_POSITON);
         inOrder.verify(container).addView(createdView);
 
-        assert instantiatedItem.equals(createdView);
+        assertEquals(createdView, instantiatedItem);
     }
 
     @Test
@@ -76,9 +77,9 @@ public class ViewPagerAdapterTest {
         given(viewPagerAdapterState.getId(A_POSITON)).willReturn(NO_ID);
         given(viewIdGenerator.generateViewId()).willReturn(expectedViewId);
 
-        View instantiatedItem = stubAdapter.instantiateItem(container, A_POSITON);
+        int actualId = stubAdapter.instantiateItem(container, A_POSITON).getId();
 
-        assert instantiatedItem.getId() == expectedViewId;
+        assertEquals(expectedViewId, actualId);
     }
 
     @Test
@@ -86,9 +87,9 @@ public class ViewPagerAdapterTest {
         int expectedViewId = 1000;
         given(viewPagerAdapterState.getId(A_POSITON)).willReturn(expectedViewId);
 
-        View instantiatedItem = stubAdapter.instantiateItem(container, A_POSITON);
+        int actualId = stubAdapter.instantiateItem(container, A_POSITON).getId();
 
-        assert instantiatedItem.getId() == expectedViewId;
+        assertEquals(expectedViewId, actualId);
     }
 
     @Test

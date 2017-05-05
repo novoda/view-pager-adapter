@@ -21,6 +21,7 @@ public class ViewPagerAdapterState implements Parcelable {
     };
 
     private static final String KEY_VIEW_IDS = "id";
+    private static final String KEY_VIEW_STATE = "state";
 
     private final SparseIntArray viewIds;
     private final SparseArray<SparseArray<Parcelable>> viewStates;
@@ -48,9 +49,10 @@ public class ViewPagerAdapterState implements Parcelable {
     }
 
     private static SparseArray<SparseArray<Parcelable>> extractViewStatesFrom(Bundle bundle) {
-        SparseArray<SparseArray<Parcelable>> viewStates = new SparseArray<>(bundle.keySet().size());
-        for (String key : bundle.keySet()) {
-            SparseArray<Parcelable> sparseParcelableArray = bundle.getSparseParcelableArray(key);
+        Bundle viewStateBundle = bundle.getBundle(KEY_VIEW_STATE);
+        SparseArray<SparseArray<Parcelable>> viewStates = new SparseArray<>(viewStateBundle.keySet().size());
+        for (String key : viewStateBundle.keySet()) {
+            SparseArray<Parcelable> sparseParcelableArray = viewStateBundle.getSparseParcelableArray(key);
             viewStates.put(Integer.parseInt(key), sparseParcelableArray);
         }
         return viewStates;
@@ -79,10 +81,8 @@ public class ViewPagerAdapterState implements Parcelable {
         Bundle bundle = new Bundle();
         int[] viewIds = viewIdsArray();
         bundle.putIntArray(KEY_VIEW_IDS, viewIds);
-        for (int i = 0; i < viewStates.size(); i++) {
-            SparseArray<Parcelable> viewState = viewStates.get(i);
-            bundle.putSparseParcelableArray(String.valueOf(i), viewState);
-        }
+        Bundle viewStateBundle = viewStateBundle();
+        bundle.putBundle(KEY_VIEW_STATE, viewStateBundle);
         dest.writeBundle(bundle);
     }
 
@@ -92,6 +92,15 @@ public class ViewPagerAdapterState implements Parcelable {
             output[index] = viewIds.get(index);
         }
         return output;
+    }
+
+    private Bundle viewStateBundle() {
+        Bundle viewStateBundle = new Bundle();
+        for (int i = 0; i < viewStates.size(); i++) {
+            SparseArray<Parcelable> viewState = viewStates.get(i);
+            viewStateBundle.putSparseParcelableArray(String.valueOf(i), viewState);
+        }
+        return viewStateBundle;
     }
 
     @Override

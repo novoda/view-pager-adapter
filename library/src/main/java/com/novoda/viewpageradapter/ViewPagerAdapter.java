@@ -7,12 +7,12 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
-    private final Map<V, Integer> instantiatedViews = new WeakHashMap<>();
+    private final Map<V, Integer> instantiatedViews = new HashMap<>();
     private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
 
     private ViewPagerAdapterState viewPagerAdapterState = ViewPagerAdapterState.newInstance();
@@ -84,6 +84,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         V view = (V) key;
         saveViewState(position, view);
         container.removeView(view);
+        instantiatedViews.remove(view);
     }
 
     private void saveViewState(int position, V view) {

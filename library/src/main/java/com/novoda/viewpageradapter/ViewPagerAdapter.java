@@ -28,6 +28,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         bindView(view, position, viewState);
         instantiatedViews.put(view, position);
         container.addView(view);
+        onViewInstantiated(view, position);
 
         // key with which to associate this view
         return view;
@@ -65,6 +66,15 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param position the position of the data set that is to be represented by this view
      */
     protected void bindView(V view, int position) {
+    }
+
+    /**
+     * Optional method to know when the View has been created, bound and restored.
+     *
+     * @param view     the created and bound view
+     * @param position the position of the data set that is to be represented by this view
+     */
+    protected void onViewInstantiated(V view, int position) {
     }
 
     @Override

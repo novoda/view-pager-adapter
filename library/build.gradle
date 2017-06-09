@@ -1,10 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'bintray-release'
 
-dependencies {
-    compile 'com.android.support:support-core-ui:25.3.1'
-}
-
 android {
     defaultConfig {
         minSdkVersion 16
@@ -12,6 +8,10 @@ android {
 
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+}
+
+dependencies {
+    compile 'com.android.support:support-core-ui:25.4.0'
 }
 
 publish {

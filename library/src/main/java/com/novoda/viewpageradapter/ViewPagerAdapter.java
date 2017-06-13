@@ -9,49 +9,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
     private static final String STATE_KEY_VIEW_STATES = "states";
-    private final Map<V, Integer> instantiatedViews = new HashMap<>();               // TODO errrrrrrrrrrrrr
+
+    private final Map<V, Integer> attachedViews = new HashMap<>();
+    private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
+
     private SparseArray<Parcelable> viewStates = new SparseArray<>();
-    private final Set<Integer> knownIds = new HashSet<>();
 
     @Override
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
 
-        if (expectsToSaveStateAt(position)) {
-            assertViewStateCanBeSavedFor(view, position);
-        }
+        setViewIdIfNecessary(view);
 
-        bindView(view, position, viewStates);
-        instantiatedViews.put(view, position);
         container.addView(view);
-        saveViewIdIfSet(view);
+        attachedViews.put(view, position);
+        bindView(view, position, viewStates);
 
-        // key with which to associate this view
         return view;
     }
 
-    protected boolean expectsToSaveStateAt(int position) {
-        return false;
-    }
-
-    private void assertViewStateCanBeSavedFor(V view, int position) {
-        if (view.getId() == View.NO_ID || knownIds.contains(view.getId())) {
-            throw new IllegalArgumentException("The view created for position " + position + " must have a unique view ID");
-        }
-    }
-
-    private void saveViewIdIfSet(V view) {
+    private int setViewIdIfNecessary(V view) {
         if (view.getId() == View.NO_ID) {
-            return;
+            int newViewId = viewIdGenerator.generateViewId();
+            view.setId(newViewId);
+            return newViewId;
         }
-        knownIds.add(view.getId());
+        return view.getId();
     }
 
     /**
@@ -72,11 +60,12 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param position   the position of the data set that is to be represented by this view
      * @param viewStates all the saved view states
      */
-    protected final void bindView(V view, int position, SparseArray<Parcelable> viewStates) {
+    private void bindView(V view, int position, SparseArray<Parcelable> viewStates) {
         bindView(view, position);
-        if (expectsToSaveStateAt(position)) {
-            view.restoreHierarchyState(viewStates);
+        if (viewStates.get(view.getId()) == null) {
+            return;
         }
+        view.restoreHierarchyState(viewStates);
     }
 
     /**
@@ -85,13 +74,12 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param view     the view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected void bindView(V view, int position) {
-    }
+    protected abstract void bindView(V view, int position);
 
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-        for (Map.Entry<V, Integer> entry : instantiatedViews.entrySet()) {
+        for (Map.Entry<V, Integer> entry : attachedViews.entrySet()) {
             int position = entry.getValue();
             bindView(entry.getKey(), position, viewStates);
         }
@@ -101,17 +89,9 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object key) {
         V view = (V) key;
-        saveViewState(view);
-        container.removeView(view);
-        instantiatedViews.remove(view);
-
-        if (view.getId() != View.NO_ID) {
-            knownIds.remove(view.getId());
-        }
-    }
-
-    private void saveViewState(V view) {
         view.saveHierarchyState(viewStates);
+        container.removeView(view);
+        attachedViews.remove(view);
     }
 
     @Override

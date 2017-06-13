@@ -31,7 +31,6 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         instantiatedViews.put(view, position);
         container.addView(view);
 
-        // key with which to associate this view
         return view;
     }
 
@@ -53,7 +52,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param position  the position of the data set that is to be represented by this view
      * @param viewState the state of the view
      */
-    protected void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
+    private void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
         bindView(view, position);
         if (viewState != null) {
             view.restoreHierarchyState(viewState);
@@ -66,8 +65,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param view     the view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected void bindView(V view, int position) {
-    }
+    protected abstract void bindView(V view, int position);
 
     @Override
     public void notifyDataSetChanged() {

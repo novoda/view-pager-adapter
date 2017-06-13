@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,6 +17,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     private static final String STATE_KEY_VIEW_STATES = "states";
 
     private final Map<V, Integer> attachedViews = new HashMap<>();
+    private final SparseIntArray positionedIds = new SparseIntArray();
     private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
 
     private SparseArray<Parcelable> viewStates = new SparseArray<>();
@@ -24,16 +26,22 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
 
-        setViewIdIfNecessary(view);
+        if (positionedIds.get(position, -1) == -1) {
+            int viewId = ensureIdIsSetFor(view);
+            positionedIds.put(viewId, position);
+        } else {
+            int originalViewId = positionedIds.get(position);
+            view.setId(originalViewId);
+        }
 
+        bindView(view, position, viewStates);
         container.addView(view);
         attachedViews.put(view, position);
-        bindView(view, position, viewStates);
 
         return view;
     }
 
-    private int setViewIdIfNecessary(V view) {
+    private int ensureIdIsSetFor(V view) {
         int originalViewId = view.getId();
         if (originalViewId == View.NO_ID) {
             int newViewId = viewIdGenerator.generateViewId();

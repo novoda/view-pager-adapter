@@ -136,6 +136,6 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object key) {
-        return view.getId() == ((View) key).getId();
+        return view == key;
     }
 }

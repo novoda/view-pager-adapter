@@ -34,12 +34,13 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     }
 
     private int setViewIdIfNecessary(V view) {
-        if (view.getId() == View.NO_ID) {
+        int originalViewId = view.getId();
+        if (originalViewId == View.NO_ID) {
             int newViewId = viewIdGenerator.generateViewId();
             view.setId(newViewId);
             return newViewId;
         }
-        return view.getId();
+        return originalViewId;
     }
 
     /**

@@ -20,18 +20,22 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     @Override
     public V instantiateItem(ViewGroup container, int position) {
         V view = createView(container, position);
+
+        ensureViewHasValidId(view, position);
+
         SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
-
-        if (view.getId() == View.NO_ID) {
-            int restoredId = viewPagerAdapterState.getId(position);
-            view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
-        }
-
         bindView(view, position, viewState);
         instantiatedViews.put(view, position);
         container.addView(view);
 
         return view;
+    }
+
+    private void ensureViewHasValidId(V view, int position) {
+        if (view.getId() == View.NO_ID) {
+            int restoredId = viewPagerAdapterState.getId(position);
+            view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
+        }
     }
 
     /**
@@ -65,7 +69,8 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param view     the view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected abstract void bindView(V view, int position);
+    protected void bindView(V view, int position) {
+    }
 
     @Override
     public void notifyDataSetChanged() {

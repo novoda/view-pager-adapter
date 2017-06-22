@@ -73,8 +73,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
      * @param view     the page view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected void bindView(V view, int position) {
-    }
+    protected abstract void bindView(V view, int position);
 
     /**
      * Restore state on the given page view.

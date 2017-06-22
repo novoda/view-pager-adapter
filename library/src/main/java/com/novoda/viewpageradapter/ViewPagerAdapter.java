@@ -13,7 +13,7 @@ import java.util.Map;
 
 public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
-    private static final String ILLEGAL_STATE_ID_ON_VIEW = "Found existing ID on view: %s. " + ViewPagerAdapter.class.getSimpleName() + " is responsible for setting/restoring page view IDs.";
+    private static final String ILLEGAL_STATE_ID_ON_VIEW = "The view created for position %d has an ID. Page view IDs must be set by the adapter to deal with state saving and restoring. Make sure your inflated views have an ID of View.NO_ID";
 
     private final Map<V, Integer> instantiatedViews = new HashMap<>();
     private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
@@ -37,9 +37,9 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         return view;
     }
 
-    private void assertViewHasNoId(V view) {
+    private void assertViewHasNoId(int position, V view) {
         if (view.getId() != View.NO_ID) {
-            String errorMessage = String.format(Locale.US, ILLEGAL_STATE_ID_ON_VIEW, view);
+            String errorMessage = String.format(Locale.US, ILLEGAL_STATE_ID_ON_VIEW, position);
             throw new IllegalStateException(errorMessage);
         }
     }

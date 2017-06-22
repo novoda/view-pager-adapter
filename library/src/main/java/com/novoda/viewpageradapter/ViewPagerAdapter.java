@@ -58,24 +58,35 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     /**
      * Bind the view to the item at the given position with view state.
      *
-     * @param view      the view to bind
+     * @param view      the page view to bind
      * @param position  the position of the data set that is to be represented by this view
      * @param viewState the state of the view
      */
-    protected void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
+    private void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
         bindView(view, position);
-        if (viewState != null) {
-            view.restoreHierarchyState(viewState);
-        }
+        restoreHierarchyState(view, position, viewState);
     }
 
     /**
      * Bind the view to the item at the given position.
      *
-     * @param view     the view to bind
+     * @param view     the page view to bind
      * @param position the position of the data set that is to be represented by this view
      */
     protected void bindView(V view, int position) {
+    }
+
+    /**
+     * Restore state on the given page view.
+     *
+     * @param view      the page view to restore state on
+     * @param position  the position of the data set that is to be represented by this view
+     * @param viewState the state of the view
+     */
+    protected void restoreHierarchyState(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
+        if (viewState != null) {
+            view.restoreHierarchyState(viewState);
+        }
     }
 
     @Override
@@ -100,8 +111,19 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
     private void saveViewState(int position, V view) {
         SparseArray<Parcelable> viewState = new SparseArray<>();
-        view.saveHierarchyState(viewState);
+        saveHierarchyState(view, position, viewState);
         viewPagerAdapterState.put(view.getId(), position, viewState);
+    }
+
+    /**
+     * Save state on the given page view.
+     *
+     * @param view      the page view to restore state on
+     * @param position  the position of the data set that is to be represented by this view
+     * @param viewState the state of the view
+     */
+    protected void saveHierarchyState(V view, int position, SparseArray<Parcelable> viewState) {
+        view.saveHierarchyState(viewState);
     }
 
     @Override

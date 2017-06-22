@@ -8,9 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
+
+    private static final String ILLEGAL_STATE_ID_ON_VIEW = "The view created for position %d has an ID. Page view IDs must be set by the adapter to deal with state saving and restoring. Make sure your inflated views have an ID of View.NO_ID";
 
     private final Map<V, Integer> instantiatedViews = new HashMap<>();
     private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
@@ -22,6 +25,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         V view = createView(container, position);
         SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
 
+        assertViewHasNoId(position, view);
         int restoredId = viewPagerAdapterState.getId(position);
         view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
 
@@ -31,6 +35,13 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
         // key with which to associate this view
         return view;
+    }
+
+    private void assertViewHasNoId(int position, V view) {
+        if (view.getId() != View.NO_ID) {
+            String errorMessage = String.format(Locale.US, ILLEGAL_STATE_ID_ON_VIEW, position);
+            throw new IllegalStateException(errorMessage);
+        }
     }
 
     /**
@@ -47,24 +58,34 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     /**
      * Bind the view to the item at the given position with view state.
      *
-     * @param view      the view to bind
+     * @param view      the page view to bind
      * @param position  the position of the data set that is to be represented by this view
      * @param viewState the state of the view
      */
-    protected void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
+    private void bindView(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
         bindView(view, position);
-        if (viewState != null) {
-            view.restoreHierarchyState(viewState);
-        }
+        restoreHierarchyState(view, position, viewState);
     }
 
     /**
      * Bind the view to the item at the given position.
      *
-     * @param view     the view to bind
+     * @param view     the page view to bind
      * @param position the position of the data set that is to be represented by this view
      */
-    protected void bindView(V view, int position) {
+    protected abstract void bindView(V view, int position);
+
+    /**
+     * Restore state on the given page view.
+     *
+     * @param view      the page view to restore state on
+     * @param position  the position of the data set that is to be represented by this view
+     * @param viewState the state of the view
+     */
+    protected void restoreHierarchyState(V view, int position, @Nullable SparseArray<Parcelable> viewState) {
+        if (viewState != null) {
+            view.restoreHierarchyState(viewState);
+        }
     }
 
     @Override
@@ -89,8 +110,19 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
     private void saveViewState(int position, V view) {
         SparseArray<Parcelable> viewState = new SparseArray<>();
-        view.saveHierarchyState(viewState);
+        saveHierarchyState(view, position, viewState);
         viewPagerAdapterState.put(view.getId(), position, viewState);
+    }
+
+    /**
+     * Save state on the given page view.
+     *
+     * @param view      the page view to restore state on
+     * @param position  the position of the data set that is to be represented by this view
+     * @param viewState the state of the view
+     */
+    protected void saveHierarchyState(V view, int position, SparseArray<Parcelable> viewState) {
+        view.saveHierarchyState(viewState);
     }
 
     @Override

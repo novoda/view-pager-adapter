@@ -8,9 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
+
+    private static final String ILLEGAL_STATE_ID_ON_VIEW = "Found existing ID on view: %s. " + ViewPagerAdapter.class.getSimpleName() + " is responsible for setting/restoring page view IDs.";
 
     private final Map<V, Integer> instantiatedViews = new HashMap<>();
     private final ViewIdGenerator viewIdGenerator = new ViewIdGenerator();
@@ -22,6 +25,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
         V view = createView(container, position);
         SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
 
+        assertViewHasNoId(view);
         int restoredId = viewPagerAdapterState.getId(position);
         view.setId(restoredId == View.NO_ID ? viewIdGenerator.generateViewId() : restoredId);
 
@@ -31,6 +35,13 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
         // key with which to associate this view
         return view;
+    }
+
+    private void assertViewHasNoId(V view) {
+        if (view.getId() != View.NO_ID) {
+            String errorMessage = String.format(Locale.US, ILLEGAL_STATE_ID_ON_VIEW, view);
+            throw new IllegalStateException(errorMessage);
+        }
     }
 
     /**

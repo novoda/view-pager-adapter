@@ -1,6 +1,6 @@
 package com.novoda.viewpageradapter.demo;
 
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 class Item {
 

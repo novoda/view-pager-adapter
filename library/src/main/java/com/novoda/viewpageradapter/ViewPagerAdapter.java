@@ -1,6 +1,8 @@
 package com.novoda.viewpageradapter;
 
 import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 import android.util.SparseArray;
@@ -20,8 +22,9 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
 
     private ViewPagerAdapterState viewPagerAdapterState = ViewPagerAdapterState.newInstance();
 
+    @NonNull
     @Override
-    public V instantiateItem(ViewGroup container, int position) {
+    public V instantiateItem(@NonNull ViewGroup container, int position) {
         V view = createView(container, position);
         SparseArray<Parcelable> viewState = viewPagerAdapterState.getViewState(position);
 
@@ -101,7 +104,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     @SuppressWarnings("unchecked")
     // `key` is the object we return in `instantiateItem(ViewGroup container, int position)`
     @Override
-    public void destroyItem(ViewGroup container, int position, Object key) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object key) {
         V view = (V) key;
         saveViewState(position, view);
         container.removeView(view);
@@ -145,7 +148,7 @@ public abstract class ViewPagerAdapter<V extends View> extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object key) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object key) {
         return view.equals(key);
     }
 }

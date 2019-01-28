@@ -1,5 +1,5 @@
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
+    gradleVersion = '4.10.3'
 }
 
 allprojects {
@@ -7,10 +7,18 @@ allprojects {
 }
 
 buildscript {
-    repositories { jcenter() }
+    repositories {
+        google()
+        jcenter()
+    }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
-        classpath 'com.novoda:bintray-release:0.4.0'
+        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.novoda:bintray-release:0.9'
     }
 }
 
+allprojects {
+    repositories {
+        google()
+    }
+}

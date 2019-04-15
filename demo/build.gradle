@@ -1,19 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.ataulm.viewpageradapter.demo"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 1
         versionName project.version
     }
 }
 
 dependencies {
-    compile project(":library")
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    implementation project(":library")
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }

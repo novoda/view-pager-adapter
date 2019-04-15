@@ -3,7 +3,7 @@ package com.novoda.viewpageradapter.demo;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 
 public class DemoActivity extends Activity implements ItemClickListener {
 

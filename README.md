@@ -1,3 +1,5 @@
+# 🛑 THIS REPOSITORY IS OFFICIALLY NO LONGER UNDER MAINTENANCE since 10/02/2022 🛑
+
 # view-pager-adapter [![](https://ci.novoda.com/buildStatus/icon?job=view-pager-adapter)](https://ci.novoda.com/job/view-pager-adapter/lastBuild/console) [![Download](https://api.bintray.com/packages/novoda/maven/view-pager-adapter/images/download.svg) ](https://bintray.com/novoda/maven/view-pager-adapter/_latestVersion) [![](https://raw.githubusercontent.com/novoda/novoda/master/assets/btn_apache_lisence.png)](LICENSE.txt)
 
 A simple implementation of PagerAdapter that supports Views.
